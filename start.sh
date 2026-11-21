@@ -27,7 +27,10 @@ printf '%s' "$MARIMO_PASSWORD" > "$PWFILE"
 cd "$NOTEBOOKS"
 # exec: marimo is PID 1's only child of interest; if it dies (crash, OOM kill)
 # the container exits non-zero and Railway's ON_FAILURE policy restarts it.
-exec marimo edit "$NOTEBOOKS" \
+# --quiet: marimo's startup banner prints the URL with the password as
+# ?access_token=..., which would end up in Railway's deploy logs.
+echo "Starting marimo on port ${PORT:-8080} (notebooks in $NOTEBOOKS)"
+exec marimo --quiet edit "$NOTEBOOKS" \
   --host "${HOST:-0.0.0.0}" \
   --port "${PORT:-8080}" \
   --headless \
